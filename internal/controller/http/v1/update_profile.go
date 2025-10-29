@@ -11,11 +11,12 @@ import (
 func (h *Handlers) UpdateProfile(ctx context.Context, request http_server.UpdateProfileRequestObject,
 ) (http_server.UpdateProfileResponseObject, error) {
 	input := dto.UpdateProfileInput{
-		ID:    request.Body.ID.String(),
-		Name:  request.Body.Name,
-		Age:   request.Body.Age,
-		Email: request.Body.Email,
-		Phone: request.Body.Phone,
+		ID:             request.Body.ID.String(),
+		Name:           request.Body.Name,
+		Age:            request.Body.Age,
+		Email:          request.Body.Email,
+		Phone:          request.Body.Phone,
+		IdempotencyKey: request.Body.IdempotencyKey,
 	}
 
 	err := h.usecase.UpdateProfile(ctx, input)

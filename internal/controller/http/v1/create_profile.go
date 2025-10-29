@@ -21,7 +21,7 @@ func (h *Handlers) CreateProfile(ctx context.Context, request http_server.Create
 	if err != nil {
 		err = render.Error(ctx, err, "request failed")
 
-		return http_server.CreateProfile400JSONResponse{Error: err.Error()}, nil //nolint:nilerr
+		return http_server.CreateProfile400JSONResponse{Error: err.Error()}, nil
 	}
 
 	return http_server.CreateProfile200JSONResponse{

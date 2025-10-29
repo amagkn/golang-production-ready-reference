@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/amagkn/golang-production-ready-reference/pkg/router"
 )
@@ -25,9 +26,11 @@ func Middleware(next http.Handler) http.Handler {
 		if err != nil {
 			event = log.Error().Err(err)
 		}
+
 		event.
 			Int("code", ww.Code()).
 			Str("method", fmt.Sprintf("%s %s", r.Method, router.ExtractPath(r.Context()))).
+			Str("trace_id", trace.SpanContextFromContext(r.Context()).TraceID().String()).
 			Send()
 	}
 

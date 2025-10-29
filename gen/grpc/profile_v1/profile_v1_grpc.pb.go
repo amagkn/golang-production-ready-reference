@@ -24,6 +24,7 @@ const (
 	ProfileV1_GetProfile_FullMethodName    = "/profile_v1.ProfileV1/GetProfile"
 	ProfileV1_UpdateProfile_FullMethodName = "/profile_v1.ProfileV1/UpdateProfile"
 	ProfileV1_DeleteProfile_FullMethodName = "/profile_v1.ProfileV1/DeleteProfile"
+	ProfileV1_GetProfiles_FullMethodName   = "/profile_v1.ProfileV1/GetProfiles"
 )
 
 // ProfileV1Client is the client API for ProfileV1 service.
@@ -34,6 +35,7 @@ type ProfileV1Client interface {
 	GetProfile(ctx context.Context, in *GetProfileInput, opts ...grpc.CallOption) (*GetProfileOutput, error)
 	UpdateProfile(ctx context.Context, in *UpdateProfileInput, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteProfile(ctx context.Context, in *DeleteProfileInput, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetProfiles(ctx context.Context, in *GetProfilesInput, opts ...grpc.CallOption) (*GetProfilesOutput, error)
 }
 
 type profileV1Client struct {
@@ -84,6 +86,16 @@ func (c *profileV1Client) DeleteProfile(ctx context.Context, in *DeleteProfileIn
 	return out, nil
 }
 
+func (c *profileV1Client) GetProfiles(ctx context.Context, in *GetProfilesInput, opts ...grpc.CallOption) (*GetProfilesOutput, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProfilesOutput)
+	err := c.cc.Invoke(ctx, ProfileV1_GetProfiles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProfileV1Server is the server API for ProfileV1 service.
 // All implementations must embed UnimplementedProfileV1Server
 // for forward compatibility.
@@ -92,6 +104,7 @@ type ProfileV1Server interface {
 	GetProfile(context.Context, *GetProfileInput) (*GetProfileOutput, error)
 	UpdateProfile(context.Context, *UpdateProfileInput) (*emptypb.Empty, error)
 	DeleteProfile(context.Context, *DeleteProfileInput) (*emptypb.Empty, error)
+	GetProfiles(context.Context, *GetProfilesInput) (*GetProfilesOutput, error)
 	mustEmbedUnimplementedProfileV1Server()
 }
 
@@ -113,6 +126,9 @@ func (UnimplementedProfileV1Server) UpdateProfile(context.Context, *UpdateProfil
 }
 func (UnimplementedProfileV1Server) DeleteProfile(context.Context, *DeleteProfileInput) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProfile not implemented")
+}
+func (UnimplementedProfileV1Server) GetProfiles(context.Context, *GetProfilesInput) (*GetProfilesOutput, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProfiles not implemented")
 }
 func (UnimplementedProfileV1Server) mustEmbedUnimplementedProfileV1Server() {}
 func (UnimplementedProfileV1Server) testEmbeddedByValue()                   {}
@@ -207,6 +223,24 @@ func _ProfileV1_DeleteProfile_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProfileV1_GetProfiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProfilesInput)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileV1Server).GetProfiles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProfileV1_GetProfiles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileV1Server).GetProfiles(ctx, req.(*GetProfilesInput))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProfileV1_ServiceDesc is the grpc.ServiceDesc for ProfileV1 service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +263,10 @@ var ProfileV1_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteProfile",
 			Handler:    _ProfileV1_DeleteProfile_Handler,
+		},
+		{
+			MethodName: "GetProfiles",
+			Handler:    _ProfileV1_GetProfiles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

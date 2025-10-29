@@ -39,7 +39,7 @@ func main() {
 
 	// Pop:
 	// Удаление и получение первого элемента
-	item, err = client.RPop(ctx, "mylist").Result()
+	item, err = client.LPop(ctx, "mylist").Result()
 	if err != nil {
 		panic(err)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 type OutboxKafkaConfig struct {
-	Limit int `envconfig:"OUTBOX_KAFKA_WORKER_LIMIT" default:"10"`
+	Limit int `default:"10" envconfig:"OUTBOX_KAFKA_WORKER_LIMIT"`
 }
 
 type OutboxKafka struct {
@@ -43,14 +43,14 @@ FOR:
 			log.Error().Err(err).Msg("outbox kafka worker: read and produce failed")
 		}
 
-		log.Info().Int("count", count).Msg("outbox kafka worker: read and produce")
+		log.Debug().Int("count", count).Msg("outbox kafka worker: read and produce")
 
 		var duration time.Duration
 
 		if count < w.config.Limit {
 			duration = 10 * time.Second
 
-			log.Info().Msg("outbox kafka worker: sleeping 10s")
+			log.Debug().Msg("outbox kafka worker: sleeping 10s")
 		}
 
 		select {

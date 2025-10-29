@@ -25,8 +25,7 @@ func (h Handlers) GetProfile(ctx context.Context, i *pb.GetProfileInput) (*pb.Ge
 
 		switch {
 		case errors.Is(err, domain.ErrNotFound):
-			return nil, status.Error(codes.NotFound, "not found")
-
+			return nil, status.Error(codes.NotFound, err.Error())
 		default:
 			return nil, status.Error(codes.InvalidArgument, err.Error())
 		}

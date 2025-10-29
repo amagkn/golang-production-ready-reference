@@ -14,11 +14,12 @@ import (
 
 func (h Handlers) UpdateProfile(ctx context.Context, i *pb.UpdateProfileInput) (*emptypb.Empty, error) {
 	input := dto.UpdateProfileInput{
-		ID:    i.GetId(),
-		Name:  i.Name,
-		Age:   parseAge(i.Age),
-		Email: i.Email,
-		Phone: i.Phone,
+		ID:             i.GetId(),
+		Name:           i.Name,
+		Age:            parseAge(i.Age),
+		Email:          i.Email,
+		Phone:          i.Phone,
+		IdempotencyKey: i.GetIdempotencyKey(),
 	}
 
 	err := h.usecase.UpdateProfile(ctx, input)

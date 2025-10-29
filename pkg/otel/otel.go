@@ -24,7 +24,7 @@ type Config struct {
 	Endpoint   string  `envconfig:"OTEL_ENDPOINT"`
 	Namespace  string  `envconfig:"OTEL_NAMESPACE"`
 	InstanceID string  `envconfig:"OTEL_INSTANCE_ID"`
-	Ratio      float64 `default:"1.0" envconfig:"OTEL_RATIO"`
+	Ratio      float64 `default:"1.0"                envconfig:"OTEL_RATIO"`
 }
 
 var shutdownTracing func(ctx context.Context) error //nolint:gochecknoglobals

@@ -8,15 +8,19 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/segmentio/kafka-go"
+	"go.opentelemetry.io/otel/trace"
+
+	semconv "go.opentelemetry.io/otel/semconv/v1.30.0"
 
 	"github.com/amagkn/golang-production-ready-reference/internal/usecase"
 	"github.com/amagkn/golang-production-ready-reference/pkg/logger"
+	"github.com/amagkn/golang-production-ready-reference/pkg/otel/tracer"
 )
 
 type Config struct {
-	Addr  []string `envconfig:"KAFKA_CONSUMER_ADDR"   required:"true"`
-	Topic string   `envconfig:"KAFKA_CONSUMER_TOPIC"  default:"awesome-topic"`
-	Group string   `envconfig:"KAFKA_CONSUMER_GROUP"  default:"awesome-group"`
+	Addr  []string `envconfig:"KAFKA_CONSUMER_ADDR" required:"true"`
+	Topic string   `default:"awesome-topic"         envconfig:"KAFKA_CONSUMER_TOPIC"`
+	Group string   `default:"awesome-group"         envconfig:"KAFKA_CONSUMER_GROUP"`
 }
 
 type Consumer struct {
@@ -62,14 +66,26 @@ FOR:
 			switch {
 			case errors.Is(err, context.Canceled):
 				log.Info().Msg("kafka consumer: context canceled")
+
 				break FOR
 			case errors.Is(err, io.EOF):
 				log.Warn().Err(err).Msg("kafka consumer: FetchMessage")
+
 				break FOR
 			}
 
 			log.Error().Err(err).Msg("kafka consumer: FetchMessage")
 		}
+
+		ctx, span := tracer.Start(ctx, "kafka consumer from "+c.config.Topic,
+			trace.WithSpanKind(trace.SpanKindConsumer),
+			trace.WithAttributes(
+				semconv.MessagingSystemKafka,
+				semconv.MessagingDestinationSubscriptionName(c.config.Topic),
+				semconv.MessagingConsumerGroupName(c.config.Group),
+				semconv.MessagingKafkaMessageKey(string(m.Key)),
+			),
+		)
 
 		log.Info().Str("key", string(m.Key)).Msg("kafka consumer: message received")
 
@@ -79,6 +95,8 @@ FOR:
 		if err = c.reader.CommitMessages(ctx, m); err != nil {
 			log.Error().Err(err).Msg("kafka consumer: CommitMessages")
 		}
+
+		span.End() // Закрываем span
 	}
 
 	close(c.done)

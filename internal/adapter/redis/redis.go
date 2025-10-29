@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	idempotencyPrefix = "my-app:idempotency:"
+	idempotencyPrefix = "idempotency:"
 	ttl               = time.Hour
 )
 

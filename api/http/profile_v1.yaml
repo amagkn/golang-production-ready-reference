@@ -52,6 +52,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /profiles:
+    get:
+      tags:
+        - Profile
+      operationId: getProfiles
+      summary: Get a profiles
+      parameters:
+        - name: sort
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Sort field. Possible values are id, name.
+          example: id
+        - name: order
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+            default: asc
+          description: Sorting direction. Possible values are asc, desc or empty string.
+          example: asc
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Number of items to skip before returning the results.
+          example: 10
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+            default: 10
+          description: Maximum number of items to return.
+          example: 10
+      responses:
+        200:
+          description: Profiles retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetProfileOutput'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Profiles not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /profile/{id}:
     get:
       tags:
@@ -153,6 +216,7 @@ components:
       type: object
       required:
         - id
+        - idempotency_key
       properties:
         id:
           type: string
@@ -183,6 +247,10 @@ components:
           nullable: true
           description: Phone number of the user
           example: +1234567890
+        idempotency_key:
+          type: string
+          description: Idempotency key to prevent duplicate updates
+          example: 123e4567-e89b-12d3-a456-426614174000
     GetProfileOutput:
       type: object
       required:

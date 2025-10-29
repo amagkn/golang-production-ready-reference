@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 
 	"github.com/amagkn/golang-production-ready-reference/internal/domain"
 	"github.com/amagkn/golang-production-ready-reference/internal/dto"
@@ -15,6 +16,13 @@ import (
 func (u *UseCase) UpdateProfile(ctx context.Context, input dto.UpdateProfileInput) error {
 	ctx, span := tracer.Start(ctx, "usecase UpdateProfile")
 	defer span.End()
+
+	// Если мы уже обработали этот запрос, просто выходим
+	if u.redis.IsExists(ctx, input.IdempotencyKey) {
+		log.Info().Msg("usecase UpdateProfile: idempotent request - skipping")
+
+		return nil
+	}
 
 	err := input.Validate()
 	if err != nil {

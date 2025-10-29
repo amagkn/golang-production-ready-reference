@@ -9,4 +9,5 @@ var (
 	ErrAllFieldsForUpdateEmpty = errors.New("all fields for update are empty")
 	ErrUUIDInvalid             = errors.New("uuid is invalid")
 	ErrEmptyTopic              = errors.New("topic is empty")
+	ErrIdempotencyKeyRequired  = errors.New("idempotency key required")
 )

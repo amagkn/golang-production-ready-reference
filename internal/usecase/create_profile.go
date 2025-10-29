@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/rs/zerolog/log"
+
 	"github.com/amagkn/golang-production-ready-reference/internal/domain"
 	"github.com/amagkn/golang-production-ready-reference/internal/dto"
 	"github.com/amagkn/golang-production-ready-reference/pkg/otel/tracer"
@@ -39,11 +41,11 @@ func (u *UseCase) CreateProfile(ctx context.Context, input dto.CreateProfileInpu
 			return fmt.Errorf("postgres.CreateProperty: %w", err)
 		}
 
-		// Запись в таблицу Outbox (из которой читает воркер и гарантировано отправляет в Кафку)
-		err = u.postgres.SaveOutboxKafka(ctx, event)
-		if err != nil {
-			return fmt.Errorf("postgres.SaveOutboxKafka: %w", err)
-		}
+		//// Запись в таблицу Outbox (из которой читает воркер и гарантировано отправляет в Кафку)
+		// err = u.postgres.SaveOutboxKafka(ctx, event)
+		// if err != nil {
+		//	return fmt.Errorf("postgres.SaveOutboxKafka: %w", err)
+		//}
 
 		return nil
 	})
@@ -52,10 +54,10 @@ func (u *UseCase) CreateProfile(ctx context.Context, input dto.CreateProfileInpu
 	}
 
 	// Сразу отправляем в Кафку (но гарантии отправки нет)
-	//err = u.kafka.Produce(ctx, event)
-	//if err != nil {
-	//	log.Error().Err(err).Msg("usecase CreateProfile: kafka.Produce")
-	//}
+	err = u.kafka.Produce(ctx, event)
+	if err != nil {
+		log.Error().Err(err).Msg("usecase CreateProfile: kafka.Produce")
+	}
 
 	return dto.CreateProfileOutput{
 		ID: profile.ID,

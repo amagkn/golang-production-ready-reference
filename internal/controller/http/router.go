@@ -18,9 +18,9 @@ func ProfileRouter(r *chi.Mux, uc *usecase.UseCase, m *metrics.HTTPServer) {
 	r.Handle("/metrics", promhttp.Handler())
 
 	r.Route("/mnepryakhin/my-app/api", func(r chi.Router) {
+		r.Use(otel.Middleware)
 		r.Use(logger.Middleware)
 		r.Use(metrics.NewMiddleware(m))
-		r.Use(otel.Middleware)
 
 		r.Route("/v1", func(r chi.Router) {
 			mux := http_server.NewStrictHandler(v1, []http_server.StrictMiddlewareFunc{})

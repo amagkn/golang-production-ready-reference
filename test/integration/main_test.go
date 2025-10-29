@@ -13,7 +13,10 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/amagkn/golang-production-ready-reference/config"
+	"github.com/amagkn/golang-production-ready-reference/internal/adapter/kafka_producer"
 	"github.com/amagkn/golang-production-ready-reference/internal/app"
+	"github.com/amagkn/golang-production-ready-reference/internal/controller/kafka_consumer"
+	"github.com/amagkn/golang-production-ready-reference/internal/controller/worker"
 	"github.com/amagkn/golang-production-ready-reference/pkg/httpserver"
 	"github.com/amagkn/golang-production-ready-reference/pkg/otel"
 	"github.com/amagkn/golang-production-ready-reference/pkg/postgres"
@@ -60,6 +63,17 @@ func (s *Suite) SetupSuite() { // В начале всех тестов
 		},
 		Redis: redis.Config{
 			Addr: "localhost:6379",
+		},
+		KafkaConsumer: kafka_consumer.Config{
+			Addr:  []string{"localhost:9092"},
+			Topic: "awesome-topic",
+			Group: "awesome-group",
+		},
+		KafkaProducer: kafka_producer.Config{
+			Addr: []string{"localhost:9092"},
+		},
+		OutboxKafka: worker.OutboxKafkaConfig{
+			Limit: 10,
 		},
 	}
 

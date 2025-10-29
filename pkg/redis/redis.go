@@ -6,9 +6,9 @@ import (
 )
 
 type Config struct {
-	Addr     string `envconfig:"REDIS_ADDR" required:"true"`
+	Addr     string `envconfig:"REDIS_ADDR"     required:"true"`
 	Password string `envconfig:"REDIS_PASSWORD"`
-	DB       int    `envconfig:"REDIS_DB" default:"0"`
+	DB       int    `default:"0"                envconfig:"REDIS_DB"`
 }
 
 type Client struct {

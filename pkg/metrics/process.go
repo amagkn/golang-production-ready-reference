@@ -16,21 +16,21 @@ func NewProcess() *Process {
 	m := &Process{}
 
 	m.total = prometheus.NewCounterVec(prometheus.CounterOpts{
-		Name: "entity_processed_total",
-		Help: "Total number of processed entities",
+		Name: "process_total",
+		Help: "Total number of processed something",
 	}, []string{"name", "status"})
 	prometheus.MustRegister(m.total)
 
 	m.duration = prometheus.NewHistogramVec(prometheus.HistogramOpts{
-		Name:    "entity_processed_duration",
-		Help:    "Duration of processing entities (in seconds)",
+		Name:    "process_duration_seconds",
+		Help:    "Duration of processing something",
 		Buckets: buckets,
 	}, []string{"name"})
 	prometheus.MustRegister(m.duration)
 
 	m.current = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "entity_processing_current",
-		Help: "Current number of processing entities",
+		Name: "process_current",
+		Help: "Current number of processing something",
 	}, []string{"name"})
 	prometheus.MustRegister(m.current)
 

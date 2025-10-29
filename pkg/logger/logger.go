@@ -19,15 +19,14 @@ func Init(c Config) {
 	zerolog.TimeFieldFormat = time.RFC3339
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-	level, err := zerolog.ParseLevel(c.Level)
-	if err != nil {
+	if level, err := zerolog.ParseLevel(c.Level); err == nil && level != zerolog.NoLevel {
 		zerolog.SetGlobalLevel(level)
 	}
 
 	log.Logger = log.With().
 		// Caller().
-		// Str("app_name", c.AppName).
-		// Str("app_version", c.AppVersion).
+		Str("app_name", c.AppName).
+		Str("app_version", c.AppVersion).
 		Logger()
 
 	if c.PrettyConsole {

@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 func (c *Client) Update(ctx context.Context, id string, name *string, age *int, email, phone *string) error {
@@ -14,17 +16,19 @@ func (c *Client) Update(ctx context.Context, id string, name *string, age *int, 
 	path := fmt.Sprintf("http://%s/%s", c.host, updateProfile)
 
 	request := struct {
-		ID    string  `json:"id"`
-		Name  *string `json:"name"`
-		Age   *int    `json:"age"`
-		Email *string `json:"email"`
-		Phone *string `json:"phone"`
+		ID             string  `json:"id"`
+		Name           *string `json:"name"`
+		Age            *int    `json:"age"`
+		Email          *string `json:"email"`
+		Phone          *string `json:"phone"`
+		IdempotencyKey string  `json:"idempotency_key"`
 	}{
-		ID:    id,
-		Name:  name,
-		Age:   age,
-		Email: email,
-		Phone: phone,
+		ID:             id,
+		Name:           name,
+		Age:            age,
+		Email:          email,
+		Phone:          phone,
+		IdempotencyKey: uuid.New().String(),
 	}
 
 	body, err := json.Marshal(request)

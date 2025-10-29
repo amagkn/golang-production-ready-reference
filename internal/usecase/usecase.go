@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/amagkn/golang-production-ready-reference/internal/domain"
+	"github.com/amagkn/golang-production-ready-reference/internal/dto"
 )
 
 //go:generate mockery
@@ -18,6 +19,7 @@ type Postgres interface {
 	CreateProfile(ctx context.Context, profile domain.Profile) error
 	CreateProperty(ctx context.Context, property domain.Property) error
 	GetProfile(ctx context.Context, profileID uuid.UUID) (domain.Profile, error)
+	GetProfiles(ctx context.Context, input dto.GetProfilesInput) ([]domain.Profile, error)
 	UpdateProfile(ctx context.Context, profile domain.Profile) error
 	DeleteProfile(ctx context.Context, id uuid.UUID) error
 

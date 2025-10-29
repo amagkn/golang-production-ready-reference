@@ -18,7 +18,7 @@ func (h *Handlers) DeleteProfileByID(ctx context.Context, request http_server.De
 	if err != nil {
 		err = render.Error(ctx, err, "request failed")
 
-		return http_server.DeleteProfileByID400JSONResponse{Error: err.Error()}, nil //nolint:nilerr
+		return http_server.DeleteProfileByID400JSONResponse{Error: err.Error()}, nil
 	}
 
 	return http_server.DeleteProfileByID204Response{}, nil

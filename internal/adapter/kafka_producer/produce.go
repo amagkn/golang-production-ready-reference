@@ -15,7 +15,7 @@ import (
 )
 
 type Config struct {
-	Addr []string `envconfig:"KAFKA_WRITER_ADDR"  required:"true"`
+	Addr []string `envconfig:"KAFKA_WRITER_ADDR" required:"true"`
 }
 
 type Producer struct {
@@ -29,7 +29,7 @@ func New(c Config, m *metrics.Process) *Producer {
 		Addr:         kafka.TCP(c.Addr...),
 		RequiredAcks: kafka.RequireAll,
 		ErrorLogger:  logger.ErrorLogger(),
-		Async:        false, // можно включить отправку батчами (с интервалом в 1s) если producer захлёбывается
+		Async:        true,
 	}
 
 	return &Producer{

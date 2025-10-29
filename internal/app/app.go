@@ -26,7 +26,7 @@ import (
 	"github.com/amagkn/golang-production-ready-reference/pkg/transaction"
 )
 
-func Run(ctx context.Context, c config.Config) error { //nolint:funlen
+func Run(ctx context.Context, c config.Config) error {
 	// Postgres
 	pgPool, err := pgpool.New(ctx, c.Postgres)
 	if err != nil {

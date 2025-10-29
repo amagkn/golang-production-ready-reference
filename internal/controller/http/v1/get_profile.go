@@ -18,15 +18,12 @@ func (h *Handlers) GetProfileByID(ctx context.Context, request http_server.GetPr
 
 	output, err := h.usecase.GetProfile(ctx, input)
 	if err != nil {
+		err = render.Error(ctx, err, "request failed")
+
 		switch {
 		case errors.Is(err, domain.ErrNotFound):
-			err = render.Error(ctx, err, "request failed")
-
 			return http_server.GetProfileByID404JSONResponse{Error: err.Error()}, nil
-
 		default:
-			err = render.Error(ctx, err, "request failed")
-
 			return http_server.GetProfileByID400JSONResponse{Error: err.Error()}, nil
 		}
 	}

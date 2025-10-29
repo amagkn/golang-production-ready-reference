@@ -12,11 +12,12 @@ import (
 
 func (c *Client) Update(ctx context.Context, id string, name *string, age *int, email, phone *string) error {
 	input := http_client.UpdateProfileInput{
-		ID:    uuid.MustParse(id),
-		Name:  name,
-		Age:   age,
-		Email: email,
-		Phone: phone,
+		ID:             uuid.MustParse(id),
+		Name:           name,
+		Age:            age,
+		Email:          email,
+		Phone:          phone,
+		IdempotencyKey: uuid.New().String(),
 	}
 
 	output, err := c.client.UpdateProfileWithResponse(ctx, input)

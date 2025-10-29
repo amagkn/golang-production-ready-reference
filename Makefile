@@ -4,6 +4,9 @@ MIGRATE_PATH = ./migration/postgres
 run:
 	go run ./cmd/app
 
+lint:
+	golangci-lint run
+
 up:
 	docker compose up --build --force-recreate
 
